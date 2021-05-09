@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>GPS Data Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Cis2750 Assignment.  GPX file website">
+    <meta name="keywords" content="GPX, files, website">
+    <meta name="author" content="Elizabeth McKenna. ID: 1053037">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <!-- Custom CSS End -->
+</head>
+
+
+<body>
+    <h3>GPS Data Viewer</h3>
+
+
+
+<hr>
+<div id="errorMessageBar"></div>
+<hr>
+
+
+
+   
+<!--
+    <hr>
+    <div id="blah">I am blah</div>
+    <hr>
+    <form ref='someform'
+          id='someform'>
+          <div class="form-group">
+                <label for="entryBox">Last Name</label>
+                <input type="text" class="form-control" id="entryBox" value="Value" placeholder="Placeholder">
+          </div>
+        <div class="form-group">
+            <input type='submit' class="btn btn-secondary">
+        </div>
+    </form>-->
+
+
+
+
+
+
+    <div id="uploadFormTextOut"></div>
+    <label for="uploadForm">Select a File To Upload</label>
+    <form ref='uploadForm'
+		id='uploadForm'
+      action='/upload'
+      method='post'
+      encType="multipart/form-data">
+      <div class="form-group">
+      	<input type="file" name="uploadFile" class="btn btn-secondary">
+      	<input type='submit' value='Upload' class="btn btn-secondary" id="fileUploadButton">
+      </div>
+    </form>
+
+
+
+
+
+
+
+    <h4>File Log</h4>
+   <!-- <div id="filelogMessageText">I am blah</div>-->
+    <form ref='fileLogPanel'
+        id='fileLogPanel' >
+        <div id="fileLogText"></div>
+        <div id=fileLogDiv style="overflow:scroll; height:250px;" >
+        <table id='fileLogPanelTable'>
+            <thead>
+                <tr>
+                    <th>File Name (click to download)</th>
+                    <th>Version</th>
+                    <th>Creator</th>
+                    <th>Number of Waypoints</th>
+                    <th>Number of Routes</th>
+                    <th>Number of Tracks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- stuff goes here dynamically -->
+            </tbody>
+        </table>
+        </div>
+        <!--
+        <form ref='uploadForm'
+            id='uploadForm'
+            action='/upload'
+            method='post'
+            encType="multipart/form-data">
+            <div class="form-group">
+                <input type="file" name="uploadFile" class="btn btn-secondary" id='file-upload-selector-1'>
+                <input type='submit' value='Upload' class="btn btn-secondary">
+            </div>
+        </form>-->
+    </form>
+
+    
+     
+    
+
+    <hr>
+
+
+
+
+    <h4>Create New GPX</h4>
+    
+
+
+
+    <form ref='newGPXform'
+        id='newGPXform'>
+        <div class="form-group">
+  
+            <input type="number" class="form-control" id="createGPXversionNumBox"  placeholder="Version Number (ex 1.1)" step=.01 min=0 required>
+            <input type="text" class="form-control" id="createGPXfileNameBox"   placeholder="GPXFileName:  (*.gpx added automatically)" required>
+            <input type="text" class="form-control" id="createGPXcreatorNameBox" placeholder="Creator Name" required>
+
+
+            <input type='submit' class="btn btn-secondary" value="Create GPX">
+            <label for='submit'>GPX File creation status</label>
+
+        </div>
+    </form>
+    <div id="createNewGPXTextOut"> </div>
+
+
+
+
+    <hr>
+
+
+
+    <label for="file-select-dropdown">Choose which GPX File to Be Working In:</label>
+    <select name="gpxFiles" id="file-select-dropdown">
+        <option placeholder="">--Please choose a file--</option>
+    </select>
+
+
+
+    <button type="button" onclick="fileSelectSubmit()">Select Option</button>
+
+
+
+
+    <hr>
+
+    
+
+
+
+
+    <h4>GPX View</h4>
+    <form ref='viewPanel'
+    id='viewPanel' >
+        <div id="viewPanelDiv" style="overflow:scroll; height:250px;" >
+            <table id='viewPanelTable'>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Name</th>
+                        <th>Number of Points</th>
+                        <th>Length</th>
+                        <th>Loop</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>No File selected</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h4 id="renamePanelNotLoggedInNotice"> LOGIN BELOW TO UNLOCK ALL GPX VIEW FEATURES!</h4>
+
+
+    <div id="renamePanel">
+        <hr>
+        <h5>Rename a Component:</h5>
+        <form>
+            <label for="rename-dropdown-box"><b>Select which Component you would like to Rename:</b></label><br>
+            <select  id="rename-dropdown-box">
+                <option placeholder="">--Please choose a component--</option>
+                <!-- dynamically populate this based on ROUTES db contents-->
+            </select><br><p></p>
+            <input type="text" id="newNameText" placeholder="New Name for Component" value="">
+            <input type="button" value="Rename" onclick=renameComponent() >
+        </form>
+       
+
+    </div>
+    
+
+
+
+
+    
+    
+ 
+
+<br><br>
+    <hr>
+    <h5 style="color:red"><b>NOTICE:</b></h5>
+    <h5 style="color:red">Add route to gpx <b>DOES NOT WORK</b>. It will not add a route to files, and will not update the database. </h5>
+    <hr>
+    <h4>Add Route To GPX</h4>
+    <hr>
+    
+        <label for="numWaypointChoice">Select Number of Waypoints In New Route</label>
+        <input type="number" id="numWaypointChoice" placeholder="Number of Waypoints" step=1 min=2 required>
+        <button type="button" onclick="addWaypointRows()">Enter Number of Waypoints</button>
+    <hr>
+
+    <form ref='addRouteform'
+        id='addRouteform'>
+        <div id="addRouteFormMessageBox">Route to add to File: </div>
+        <div class="form-group">
+           <!-- <label for="routeNameBox">Name of Route</label>-->
+            <input type="text" class="form-control" id="routeNameBox"  placeholder="Route Name" >
+        
+                <table id="waypointsInputTable"> 
+                    <tr> 
+                        <td> 1 </td>
+                        <td> <input type="number" class="form-control" id="latitudeNumBox1" placeholder="Latitude" step=.00000001 min=-90 max=90 required> </td>
+                        <td> <input type="number" class="form-control" id="longitudeNumBox1" placeholder="Longitude" step=.00000001 min=-180 max=180 required> </td>
+                    </tr>
+                    <tr> 
+                        <td> 2 </td>
+                        <td> <input type="number" class="form-control" id="latitudeNumBox2" placeholder="Latitude" step=.00000001 min=-90 max=90 required> </td>
+                        <td> <input type="number" class="form-control" id="longitudeNumBox2" placeholder="Longitude" step=.00000001 min=-180 max=180 required> </td>
+                    </tr>
+                </table>
+                
+
+       
+                <!--<input id="addRouteButton" type='submit' class="btn btn-secondary" value="Add Route" onclick="addRouteFormSubmitBtnPressed()">-->
+                <input id="addRouteButton" type='submit' class="btn btn-secondary" value="Add Route" onclick="addRouteFormSubmitBtnPressed()" >
+                <label id="addRoutesMessageBox"for="addRouteButton"></label>
+        </div>
+    </form>
+
+    <h5 style="color:red"><b> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</b></h5>
+<br><br>
+
+
+
+
+
+    <hr>
+
+    <h4>Find Path Between</h4>
+
+    <form ref='pathsBetweenForm'
+        id='pathsBetweenForm'>
+        <div id="pathsBetweenFormMessageBar">Searching in File: </div>
+        <div class="form-group">
+            
+
+              <table>
+                    <tr>
+                        <td>
+                            <input type="number" class="form-control" id="latNumBoxStart" placeholder="Latitude at Start" step=.00000001 max=90 min=-90 required>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" id="lonNumBoxStart" placeholder="Longitude at Start" step=.00000001 max=180 min=-180 required>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td>
+                            <input type="number" class="form-control" id="latNumBoxEnd" placeholder="Latitude at End" step=.00000001 max=90 min=-90 required>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" id="lonNumBoxEnd" placeholder="Longitude at End" step=.00000001 max=180 min=-180 required>
+                        </td>
+                    </tr>
+                </table>   
+
+
+
+            <label for="deltaVal">Delta Value (m)</label>
+            <input type="number" class="form-control" id="deltaVal"  step=.00001 min=0 value=10 required>   
+       
+
+            <input type='submit' class="btn btn-secondary" value="Find Paths">
+            <label for='submit'>Search for paths</label>
+            <p></p>
+            
+
+            <h5>Paths Found</h6>
+            <table id="pathsFoundTable">
+                <tr>
+                    <th>Component</th>
+                    <th>Name</th>
+                    <th>Number of Points</th>
+                    <th>Length</th>
+                    <th>Loop</th>
+                </tr>
+            </table>
+
+
+        </div>
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+    <br>
+    <br>
+    <hr>
+    <h3>Execute Query</h3>
+    <hr>
+
+
+
+    <div id="databaseLogoutBtn">
+        <input type="button" id="databaseLogoutBtnInner" value="Logout of Database" onclick=logoutDatabase()>
+    </div>
+    
+    
+
+    <form ref='databaseLoginForm' id='databaseLoginForm'>
+        <div class="form-group">
+            <h5>Please Login to Search in Database</h5>
+
+            <label for='databaseLoginUsername'>Username:</label>
+            <input type="text" class="form-control" id="databaseLoginUsername"  placeholder="Username" value="" required>
+            <label for='databaseLoginPassword'>Password:</label>
+            <input type="password" class="form-control" id="databaseLoginPassword"   placeholder="Password" value="" required>
+            <label for='databaseLoginDatabaseName'>Database Name:</label>
+            <input type="text" class="form-control" id="databaseLoginDatabaseName" placeholder="Database Name" value="" required>
+            <br>
+            <input type='submit' id='databaseLoginSubmitBtn' class="btn btn-secondary" value="Login">
+            <label id='databaseLoginSubmitLabel' for='databaseLoginSubmitBtn'></label>
+
+        </div>
+    </form>
+
+
+
+    <label id='databaseOpLabel'></label>
+    <div id="databaseOpButtonPanel">
+        <input type="button" id="storeAllFilesButton" value="Store All Files" onclick=storeAllFilesBtnClicked() >
+        <input type="button" id="clearAllTablesButton" value="Clear All Tables" onclick= clearAllDBTablesButtonClicked() >
+        <input type="button" id="getDBStatus" value="Get Database Status" onclick= getDatabaseStatusButtonClicked() >
+        <br>
+        <hr>
+       
+       
+        <br>
+    </div>
+
+
+
+    <div id="queryButtonPanel">
+        <h4>Search In Database:</h4>
+        <input type="button" id="displayAllRoutesQueryBtn" value="Display All Routes" onclick= displayAllRoutesButtonClicked() >
+        <input type="button" id="displayroutesFromSpecificFileQueryBtn" value="Display Routes From File" onclick= displayRoutesFromFileButtonClicked() >
+        <input type="button" id="displayAllPointsFromRouteQueryBtn" value="Display Points From Route" onclick= displayAllPointsFromRouteButtonClicked() >
+        <input type="button" id="displayAllPointsFromFileQueryBtn" value="Display Points From File" onclick= displayAllPointsFromFileButtonClicked() >
+        <input type="button" id="displayShortestLongestRoutesQueryBtn" value="Display Shortest/Longest Routes" onclick= displayShortestLongestRoutesButtonClicked() >
+    </div>
+
+
+
+    <div id=queryButtonPanel>
+
+
+        <!-- displayed when Display All Routes Button is Clicked -->
+        <form id="displayAllRoutesPanel">
+            <p></p>
+            <h5>Display All Routes Selected</h5>
+            <p><b>Sort results by: </b></p>
+            <div>
+                <input type="radio" name="displayAllRoutesQuery" id="displayAllRoutesSortByName" value="Name" checked>
+                <label for="displayAllRoutesSortByName">Name</label><br>
+                <input type="radio" name="displayAllRoutesQuery" id="displayAllRoutesSortByLength" value="Length">
+                <label for="displayAllRoutesSortByLength">Length (ascending) </label><br>
+            </div>
+            <input type="button" value="Search" onclick= displayAllRoutesQueryFunction() >
+        </form>
+
+
+
+        <!-- displayed when Display Routes From File Button is Clicked -->
+        <form id="displayRoutesFromFilePanel">
+            <p></p>
+            <h5>Display Routes From File Selected</h5>
+            <label for="routeFromDbDropdownRouteFromFile"><b>Select which file:</b></label>
+            <select name="routeFromDbDropdownRouteFromFile" id="routeFromDbDropdownRouteFromFile">
+                    <option placeholder="">--Please choose a file--</option>
+                    <!-- dynamically populate this based on ROUTES db contents-->
+            </select>
+            <p><b>Sort results by:</b> </p>
+            <div>
+                <input type="radio" name="displayRoutesFromFileQuery"  id="displayRoutesSortByNameQuery2" value="routename" checked>
+                <label for="displayRoutesSortByNameQuery2">Route Name</label><br>
+                <input type="radio" name="displayRoutesFromFileQuery"  id="displayRoutesSortByLengthQuery2" value="routeLength">
+                <label for="displayRoutesSortByLengthQuery2">Route Length</label><br>
+            </div>
+            <input type="button" value="Search" onclick=displayRoutesFromFileQueryFunction() >
+        </form>
+
+
+
+        <!-- displayed when Display Points From Route is Clicked -->
+        <form id="displayPointsFromRoutePanel">
+            <p></p>
+            <h5>Display Points From Route Selected</h5>
+            <div>
+                <label for="routeFromDbDropdownPointsFromRoute"><b>Select which route:</b></label>
+                <select name="routesFromDbDropdown" id="routeFromDbDropdownPointsFromRoute">
+                    <option placeholder="">--Please choose a route--</option>
+                    <!-- dynamically populate this based on ROUTES db contents-->
+                </select>
+            </div>
+            <input type="button" value="Search" onclick=displayPointsFromRouteQueryFunction() >
+        </form>
+
+
+
+        <!-- displayed when Display Points From File is Clicked -->
+        <form id="displayPointsFromFilePanel">
+            <p></p>
+            <h5>Display Points From File Selected</h5>
+            <div>
+                <label for="filesFromDbDropdownPointsFromFile"><b>Select which file:</b></label>
+                <select name="routesFromDbDropdown" id="filesFromDbDropdownPointsFromFile">
+                    <option placeholder="">--Please choose a file--</option>
+                    <!-- dynamically populate this based on ROUTES db contents-->
+                </select>
+                <p><b>Order results by:</b> </p>
+                <div>
+                    <input type="radio" name="displayPointsFromFileQuery" id="displayPointsFromFileSortByRouteName" value="routename" checked>
+                    <label for="displayPointsFromFileQuery">Route Name</label><br>
+                    <input type="radio" name="displayPointsFromFileQuery"  id="displayAllRoutesSortByRouteLength" value="routeLength">
+                    <label for="displayAllRoutesSortByRouteLength">Route Length</label><br>
+
+                </div>
+            </div>
+            <input type="button" value="Search" onclick=displayPointsFromFileQueryFunction() >
+        </form>
+
+
+
+         <!-- displayed when Display Shorstest/Longest Routes is Clicked -->
+         <form id="displayShortestLongestRoutesPanel">
+            <p></p>
+            <h5>Display Shortest/Longest Routes Selected</h5>
+            <div>
+                <label for="filesFromDbDropdownPointsFromFileShortestLongest"><b>Select which file:</b></label>
+                <select name="routesFromDbDropdown" id="filesFromDbDropdownPointsFromFileShortestLongest">
+                    <option placeholder="">--Please choose a route--</option>
+                    <!-- dynamically populate this based on ROUTES db contents-->
+                </select>
+
+                <br>
+                <label for="numRoutesToDisplayShortLong">How many Routes would you like to display?</label>
+                <input type="number" id="numRoutesToDisplayShortLong" min="1" step="1" value="2">
+                <br>
+
+                <p><b>Finding Shortest/Longest Routes:</b> </p>
+                <div>
+                    <input type="radio" name="ShortestLongestQuery" id="displayShortestRoutesRadio" value="shortest" checked>
+                    <label for="displayShortestRoutesRadio">Shortest</label><br>
+                    <input type="radio" name="ShortestLongestQuery"  id="displayLongestRoutesRadio" value="longest">
+                    <label for="displayLongestRoutesRadio">Longest</label><br>
+                </div>
+                
+                <p><b>Order results by: </b></p>
+                <div>
+                    <input type="radio" name="displayRoutesFromFileQuery"  id="displayShortestLongestSortByRoute" value="routename" checked>
+                    <label for="displayShortestLongestSortByRoute">Route Name</label><br>
+                    <input type="radio" name="displayRoutesFromFileQuery"  id="displayShortestLongestSortByLength" value="routeLength">
+                    <label for="displayShortestLongestSortByLength">Route Length</label><br>
+                </div>
+            </div>
+            <input type="button" value="Search" onclick= displayShortestLongestQueryFunction() >
+        </form>
+    </div>  
+        <br>
+        <hr>
+    <div id="queryResultPanel" style="overflow:scroll; height:300px;">
+        <h4 id=queryResultPanelTitle>Results:</h4>
+        <table id=queryResultTable >
+
+        </table>
+    </div>
+    
+        
+
+    <hr>
+
+    <!-- Leave me at the bottom of body -->
+    <script src="/index.js"></script>
+</body>
+</html>
